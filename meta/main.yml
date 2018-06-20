@@ -1,0 +1,20 @@
+---
+galaxy_info:
+  author: Josh Benner
+  description: Install and configure certbot
+  license: BSD
+  min_ansible_version: 2.5
+  platforms:
+    - name: Ubuntu
+      versions:
+        - xenial
+    - name: Debian
+      versions:
+        - stretch
+    - name: EL
+      versions:
+        - 7
+
+  galaxy_tags: []
+
+dependencies: []

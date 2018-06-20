@@ -1,0 +1,8 @@
+#!/bin/sh
+"{{ certbot_install_dir }}"/certbot-auto \
+  --server {{ certbot_ca_server }} \
+  {% if certbot_no_verify_ssl %}--no-verify-ssl{% endif %} \
+  --config-dir {{ certbot_config_dir }} \
+  --work-dir {{ certbot_work_dir }} \
+  --logs-dir {{ certbot_logs_dir }} \
+  "$@"

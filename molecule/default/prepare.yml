@@ -1,0 +1,31 @@
+---
+- name: Prepare ACME test server
+  hosts: servers
+  tasks:
+    - name: Get pebble
+      command: go get -u github.com/letsencrypt/pebble/...
+
+    - name: Install pebble
+      command: go install ./...
+      args:
+        chdir: /go/src/github.com/letsencrypt/pebble
+
+    - name: Run pebble
+      shell: pkill pebble; pebble </dev/null >/dev/null 2>&1 &
+      args:
+        chdir: /go/src/github.com/letsencrypt/pebble
+      environment:
+        PEBBLE_VA_ALWAYS_VALID: 1
+        PEBBLE_VA_NOSLEEP: 1
+        PEBBLE_WFE_NONCEREJECT: 0
+
+- name: Prepare
+  hosts: clients
+  tasks:
+    - name: Install dependency packages
+      package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - git
+        - anacron

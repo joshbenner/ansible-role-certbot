@@ -1,0 +1,37 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint:
+  name: yamllint
+platforms:
+  - name: certbot-centos7
+    image: centos:7
+    groups: ['clients']
+    networks: [{name: 'molecule-certbot'}]
+  - name: certbot-xenial
+    image: ubuntu:xenial
+    groups: ['clients']
+    networks: [{name: 'molecule-certbot'}]
+  - name: certbot-stretch
+    image: debian:stretch
+    groups: ['clients']
+    networks: [{name: 'molecule-certbot'}]
+  - name: certbot-server
+    image: golang:stretch
+    groups: ['servers']
+    networks: [{name: 'molecule-certbot'}]
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      stdout_callback: yaml
+  lint:
+    name: ansible-lint
+scenario:
+  name: default
+verifier:
+  name: testinfra
+  lint:
+    name: flake8

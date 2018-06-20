@@ -1,0 +1,7 @@
+---
+- include_tasks: install_source.yml
+- include_tasks: configure.yml
+- include_tasks: register.yml
+
+- include_tasks: get_cert.yml
+  loop: "{{ certbot_certs }}"

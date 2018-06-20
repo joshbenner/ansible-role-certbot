@@ -1,0 +1,14 @@
+---
+- name: Check if cert '{{ item.name }}' has been issued
+  command: "{{ _certbot_bin }} certificates --cert-name={{ item.name }}"
+  register: _certbot_findcert
+  changed_when: "('Certificate Name: ' + item.name) not in _certbot_findcert.stdout"
+
+- name: Request cert '{{ item.name }}'
+  command: |-
+    {{ _certbot_bin }} certonly
+    --cert-name {{ item.name }}
+    --{{ item.method | d('standalone') }}
+    -d {{ item.domains|join(',') }}
+  environment: "{{ item.env | d({}) }}"
+  when: _certbot_findcert is changed

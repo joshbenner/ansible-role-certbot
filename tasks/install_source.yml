@@ -1,0 +1,29 @@
+---
+- name: Clone certbot
+  git:
+    repo: "{{ certbot_git_repo }}"
+    dest: "{{ certbot_install_dir }}"
+    version: "{{ certbot_version }}"
+    update: "{{ certbot_force_update }}"
+    force: yes
+  register: _certbot_cloned
+
+- name: Make cloned repo readable by certbot user
+  file:
+    path: "{{ certbot_install_dir }}"
+    owner: "{{ certbot_user }}"
+    group: "{{ certbot_group }}"
+    recurse: yes
+
+- name: Make certbot-auto executable
+  file:
+    path: "{{ certbot_install_dir }}/certbot-auto"
+    mode: 0755
+
+- name: Add convenience wrapper script
+  template:
+    src: certbot-wrapper.sh.j2
+    dest: /usr/local/sbin/{{ certbot_script_name }}
+    mode: 0755
+    owner: "{{ certbot_user }}"
+    group: "{{ certbot_group }}"

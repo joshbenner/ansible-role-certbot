@@ -1,0 +1,47 @@
+---
+# Git repo from whence to install certbot.
+certbot_git_repo: https://github.com/certbot/certbot.git
+
+# Version of certbot to checkout. Can be branch or tag.
+certbot_version: master
+
+# If true, checks repo for updates every time.
+# Default is to update unless pinned to version tag.
+certbot_force_update: "{{ certbot_version[0] != 'v' }}"
+
+# Directories used by certbot.
+certbot_install_dir: /opt/certbot
+certbot_config_dir: /etc/certbot
+certbot_work_dir: /var/lib/certbot
+certbot_logs_dir: /var/log/certbot
+
+# User and group to own certbot install and other files.
+certbot_user: root
+certbot_group: root
+
+# Name given to wrapper script. May need to change in event of naming conflict.
+certbot_script_name: certbot
+
+# Must be set to true for registration to succeed.
+certbot_agree_tos: false
+certbot_eff_email: false
+
+# Required for registration
+# certbot_account_email:
+
+certbot_renew_cron: true
+certbot_renew_cron_user: root
+certbot_renew_cron_options: "--quiet --no-self-upgrade"
+
+certbot_ca_server: https://acme-v02.api.letsencrypt.org/directory
+certbot_no_verify_ssl: false
+
+certbot_certs: []
+# - name: example-main
+#   domains:
+#     - example.com
+#     - www.example.com
+#   method: dns-route53
+#   env:
+#     AWS_ACCESS_KEY_ID: someID
+#     AWS_SECRET_ACCESS_KEY: sekrit

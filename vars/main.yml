@@ -1,0 +1,10 @@
+---
+_certbot_bin: >-
+  "{{ certbot_install_dir }}"/certbot-auto -n
+  --server {{ certbot_ca_server }}
+  {% if certbot_no_verify_ssl %}--no-verify-ssl{% endif %}
+  --config-dir {{ certbot_config_dir }}
+  --work-dir {{ certbot_work_dir }}
+  --logs-dir {{ certbot_logs_dir }}
+_certbot_server_url: "{{ certbot_ca_server | urlsplit }}"
+_certbot_account_path: "{{ certbot_config_dir }}/accounts/{{ _certbot_server_url.netloc }}{{ _certbot_server_url.path }}"

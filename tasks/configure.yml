@@ -1,0 +1,21 @@
+---
+- name: Configure certbot cron
+  cron:
+    name: certbot-renew {{ certbot_ca_server }}
+    cron_file: ansible-certbot
+    state: "{{ 'present' if certbot_renew_cron else 'absent' }}"
+    special_time: daily
+    user: "{{ certbot_renew_cron_user }}"
+    job: '{{ _certbot_bin }} renew {{ certbot_renew_cron_options }}'
+
+- name: Create certbot paths
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ certbot_user }}"
+    group: "{{ certbot_group }}"
+    mode: 0755
+  loop:
+    - "{{ certbot_config_dir }}"
+    - "{{ certbot_work_dir }}"
+    - "{{ certbot_logs_dir }}"

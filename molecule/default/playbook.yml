@@ -1,0 +1,17 @@
+---
+- name: Converge
+  hosts: clients
+  roles:
+    - role: ../../..
+  vars:
+    certbot_ca_server: https://certbot-server:14000/dir
+    certbot_version: v0.25.1
+    certbot_no_verify_ssl: true
+    certbot_agree_tos: true
+    certbot_account_email: test@example.com
+    certbot_certs:
+      - name: mycert
+        domains:
+          - example.com
+          - www.example.com
+        method: standalone

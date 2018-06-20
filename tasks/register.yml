@@ -1,0 +1,10 @@
+---
+- name: Register account with CA server
+  command: |
+    {{ _certbot_bin }} register
+    {% if certbot_agree_tos %}--agree-tos{% endif %}
+    {% if certbot_eff_email %}--eff-email{% else %}--no-eff-email{% endif %}
+    --email {{ certbot_account_email }}
+  args:
+    creates: "{{ _certbot_account_path }}"
+  when: certbot_certs|length > 0
