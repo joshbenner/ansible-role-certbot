@@ -28,3 +28,8 @@ def test_cron_configured(host):
 def test_cert_issued(host):
     file = host.file('/etc/certbot/live/mycert/cert.pem')
     assert file.exists
+
+
+def test_wildcard_issued(host):
+    file = host.file('/etc/certbot/live/wildcard/cert.pem')
+    assert file.exists

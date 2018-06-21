@@ -42,6 +42,7 @@ certbot_certs: []
 #     - example.com
 #     - www.example.com
 #   method: dns-route53
+#   params: --dns-route53-propagation-seconds 30
 #   env:
 #     AWS_ACCESS_KEY_ID: someID
 #     AWS_SECRET_ACCESS_KEY: sekrit

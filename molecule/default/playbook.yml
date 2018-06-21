@@ -15,3 +15,10 @@
           - example.com
           - www.example.com
         method: standalone
+      - name: wildcard
+        domains:
+          - '*.example.com'
+        method: dns-rfc2136
+        params: |-
+          --dns-rfc2136-credentials /etc/rfc2136.ini
+          --dns-rfc2136-propagation-seconds	5

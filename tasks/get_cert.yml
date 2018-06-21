@@ -4,11 +4,19 @@
   register: _certbot_findcert
   changed_when: "('Certificate Name: ' + item.name) not in _certbot_findcert.stdout"
 
+- name: Install DNS provider
+  pip:
+    name: file://{{ certbot_install_dir }}/certbot-{{ item.method }}
+    virtualenv: /opt/eff.org/certbot/venv
+    editable: true
+  when: _certbot_findcert is changed and item.method.startswith('dns-')
+
 - name: Request cert '{{ item.name }}'
   command: |-
     {{ _certbot_bin }} certonly
     --cert-name {{ item.name }}
     --{{ item.method | d('standalone') }}
+    {{ item.params | d('') }}
     -d {{ item.domains|join(',') }}
   environment: "{{ item.env | d({}) }}"
   when: _certbot_findcert is changed

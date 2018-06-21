@@ -1,5 +1,5 @@
 ---
-- name: Register account with CA server
+- name: Register account (may take long time on first run)
   command: |
     {{ _certbot_bin }} register
     {% if certbot_agree_tos %}--agree-tos{% endif %}

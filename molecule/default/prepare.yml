@@ -11,13 +11,69 @@
         chdir: /go/src/github.com/letsencrypt/pebble
 
     - name: Run pebble
-      shell: pkill pebble; pebble </dev/null >/dev/null 2>&1 &
+      shell: pgrep pebble || pebble </dev/null >/dev/null 2>&1 &
       args:
         chdir: /go/src/github.com/letsencrypt/pebble
       environment:
         PEBBLE_VA_ALWAYS_VALID: 1
         PEBBLE_VA_NOSLEEP: 1
         PEBBLE_WFE_NONCEREJECT: 0
+
+- name: Prepare fake DNS server
+  hosts: nameservers
+  tasks:
+    - name: Install BIND
+      apt:
+        name: bind9
+
+    - name: Remove existing TSIG keys
+      shell: rm /etc/bind/Ktestkey*
+      args:
+        warn: false
+      ignore_errors: yes
+
+    - name: Generate TSIG key
+      command: dnssec-keygen -a HMAC-SHA512 -b 512 -n HOST testkey
+      args:
+        chdir: /etc/bind
+      register: _mk_tsig_key
+
+    - name: Read TSIG key
+      shell: grep Key /etc/bind/Ktestkey.*.private | awk '{print $2}'
+      register: _tsig_key
+
+    - name: Create example.com zone file
+      copy:
+        dest: /var/lib/bind/db.example.com
+        content: |
+          $ORIGIN example.com.
+          $TTL 86400
+          @	IN	SOA	ns1.example.com.	hostmaster.example.com. (
+              2001062501 ; serial
+              21600      ; refresh after 6 hours
+              3600       ; retry after 1 hour
+              604800     ; expire after 1 week
+              86400 )    ; minimum TTL of 1 day
+          @ IN NS ns1.example.com.
+          ns1 IN A {{ ansible_default_ipv4.address }}
+
+    - name: Write BIND config
+      blockinfile:
+        path: /etc/bind/named.conf.local
+        block: |
+          key "testkey" {
+            algorithm HMAC-SHA512;
+            secret "{{ _tsig_key.stdout }}";
+          };
+          zone "example.com" {
+            type master;
+            file "/var/lib/bind/db.example.com";
+            allow-update { key testkey; };
+            allow-transfer { any; };
+          };
+
+    - name: Start BIND
+      command: /etc/init.d/bind9 restart
 
 - name: Prepare
   hosts: clients
@@ -29,3 +85,14 @@
       loop:
         - git
         - anacron
+
+    - name: Write rfc2136 configuration
+      copy:
+        dest: /etc/rfc2136.ini
+        content: |
+          dns_rfc2136_server = {{ hostvars['certbot-dns'].ansible_default_ipv4.address }}
+          dns_rfc2136_port = 53
+          dns_rfc2136_name = testkey
+          dns_rfc2136_secret = {{ hostvars['certbot-dns']._tsig_key.stdout }}
+          dns_rfc2136_algorithm = HMAC-SHA512
+        mode: 0600

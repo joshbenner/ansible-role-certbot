@@ -22,6 +22,10 @@ platforms:
     image: golang:stretch
     groups: ['servers']
     networks: [{name: 'molecule-certbot'}]
+  - name: certbot-dns
+    image: ubuntu:xenial
+    groups: ['nameservers']
+    networks: [{name: 'molecule-certbot'}]
 provisioner:
   name: ansible
   config_options:
