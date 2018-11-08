@@ -9,7 +9,7 @@
     name: file://{{ certbot_install_dir }}/certbot-{{ item.method }}
     virtualenv: /opt/eff.org/certbot/venv
     editable: true
-  when: _certbot_findcert is changed and item.method.startswith('dns-')
+  when: item.method.startswith('dns-')
 
 - name: Request cert '{{ item.name }}'
   command: |-
