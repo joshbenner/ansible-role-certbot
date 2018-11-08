@@ -10,6 +10,8 @@
     virtualenv: /opt/eff.org/certbot/venv
     editable: true
   when: item.method.startswith('dns-')
+  # Always shows as changed?
+  changed_when: false
 
 - name: Request cert '{{ item.name }}'
   command: |-
