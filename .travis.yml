@@ -1,6 +1,6 @@
 ---
 language: python
-python: "2.7"
+python: "3.8"
 sudo: required
 services:
   - docker
@@ -9,6 +9,8 @@ install:
   - pip install -r molecule/requirements.txt
 
 script:
+  - yamllint .
+  - ansible-lint molecule/*/converge.yml
   - molecule test --all
 
 notifications:

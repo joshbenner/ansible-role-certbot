@@ -1,2 +1,4 @@
 molecule
 docker
+ansible-lint
+testinfra

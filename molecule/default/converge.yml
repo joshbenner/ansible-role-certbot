@@ -21,4 +21,4 @@
         method: dns-rfc2136
         params: |-
           --dns-rfc2136-credentials /etc/rfc2136.ini
-          --dns-rfc2136-propagation-seconds	5
+          --dns-rfc2136-propagation-seconds 5
