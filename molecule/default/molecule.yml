@@ -12,8 +12,16 @@ platforms:
     image: ubuntu:xenial
     groups: ['clients']
     networks: [{name: 'molecule-certbot'}]
+  - name: certbot-bionic
+    image: ubuntu:bionic
+    groups: ['clients']
+    networks: [{name: 'molecule-certbot'}]
   - name: certbot-stretch
     image: debian:stretch
+    groups: ['clients']
+    networks: [{name: 'molecule-certbot'}]
+  - name: certbot-buster
+    image: debian:buster
     groups: ['clients']
     networks: [{name: 'molecule-certbot'}]
   - name: certbot-server
